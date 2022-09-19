@@ -1,0 +1,27 @@
+{
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "",
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "includePath": [
+                "/home/lantern/ROS_workspace/ForestGene/devel/include/**",
+                "/home/lantern/ROS_workspace/livox-driver-r2live/devel/include/**",
+                "/home/lantern/catkin_ws/devel/include/**",
+                "/opt/ros/melodic/include/**",
+                "/home/lantern/ROS_workspace/ForestGene/src/simulator/globalmap_generator/include/**",
+                "/home/lantern/catkin_ws/src/mavros/libmavconn/include/**",
+                "/home/lantern/catkin_ws/src/mavros/mavros/include/**",
+                "/home/lantern/catkin_ws/src/mavros/mavros_msgs/include/**",
+                "/home/lantern/catkin_ws/src/mavros/test_mavros/include/**",
+                "/home/lantern/ROS_workspace/ForestGene/src/planner/ugv_planner/include/**",
+                "/usr/include/**",
+                "${workspaceFolder}/planner/bspline_opt/include",
+                "${workspaceFolder}/planner/ugv_planner/include"
+            ],
+            "name": "ROS"
+        }
+    ],
+    "version": 4
+}

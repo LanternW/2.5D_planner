@@ -1,0 +1,10 @@
+<launch>
+
+ <node pkg="globalmap_generator" name="tmap_gene" type="tmap_gene_node" output="screen">
+    <remap from="/global_map" to="/global_map"/>
+    <param name="map_id" value="7" />
+ </node>
+
+ <!--node name="rviz" pkg="rviz" type="rviz" args="-d $(find globalmap_generator)/launch/default.rviz" required="true" /-->
+
+</launch>

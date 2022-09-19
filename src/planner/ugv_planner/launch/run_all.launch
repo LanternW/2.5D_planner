@@ -1,0 +1,57 @@
+<launch>
+
+    <arg name="drone_id" value="0"/>
+    <arg name="max_height" value="1.0"/>
+    <arg name="odom_topic" value="viscar/odom" />
+    
+    <!-- trajectory server -->
+    <node pkg="ugv_planner" name="ugv_traj_server" type="traj_server" output="screen">
+      <param name="max_height" value="$(arg max_height)" />
+
+      <remap from="~controller_cmd" to="/ugv_planning/wheels_vel_cmd"/>
+      <remap from="~jump_command" to="/ugv_planning/jump_cmd"/>
+      <remap from="~trajectory_topic" to="/ugv_planner_node/trajectory"/>
+      <remap from="~jt_array" to="/ugv_planner_node/jt_array"/>
+      <remap from="~odom" to="$(arg odom_topic)"/>
+    </node>
+
+
+    <!--main planner-->
+    <node pkg="ugv_planner" name="ugv_planner_node" type="ugv_planner_node" output="screen">
+      <param name="max_height" value="$(arg max_height)" />
+
+      <remap from="~trajectory_topic" to="/ugv_planner_node/trajectory"/>
+      <remap from="global_map" to="/global_map"/>
+      <remap from="odom" to="/viscar/odom"/>
+      <param name="optimization/rhoT" value="100"/>
+      <param name="optimization/rhoP" value="100000"/>
+      <param name="optimization/rhoV" value="1000"/>
+      <param name="optimization/rhoA" value="1000"/>
+      <param name="optimization/vmax" value="4.0"/>
+      <param name="optimization/amax" value="6.0"/>
+      <param name="optimization/vmaxz" value="0.2"/>
+      <param name="optimization/amaxz" value="0.4"/>
+      <param name="optimization/pause_debug" value="1"/>
+
+    </node>
+    <!-- use simulator -->
+
+    <include file="$(find ugv_planner)/launch/simulator.xml">
+
+        <arg name="max_height" value="$(arg max_height)" />
+        <arg name="drone_id" value="$(arg drone_id)"/>
+        <arg name="map_size_x_" value="40"/>
+        <arg name="map_size_y_" value="60"/>
+        <arg name="map_size_z_" value="10"/>
+        <arg name="init_x_" value="1.0"/>
+        <arg name="init_y_" value="-1.0"/>
+        <arg name="init_z_" value="0.0"/>
+        <arg name="odometry_topic" value="$(arg odom_topic)" />
+    </include>
+
+    <!--simulate global map-->
+    <include file="$(find globalmap_generator)/launch/tmap_gene.launch">
+    </include>
+    <!-- rviz -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find ugv_planner)/param/default.rviz" required="true" />
+</launch>

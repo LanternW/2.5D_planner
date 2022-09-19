@@ -1,0 +1,61 @@
+<launch>
+  <arg name="init_x_"/>
+  <arg name="init_y_"/>
+  <arg name="init_z_"/> 
+  <arg name="map_size_x_"/>
+  <arg name="map_size_y_"/>
+  <arg name="map_size_z_"/>
+  <arg name="c_num"/>
+  <arg name="p_num"/>
+  <arg name="min_dist"/>
+  <arg name="odometry_topic"/>
+  <arg name="drone_id"/>
+  <arg name="max_height" />
+  
+  <node pkg="kimatic_simulator" name="ugv_kimatic_simulator" type="diablo_kimatic_simulator_node" output="screen">
+        <param name="max_height" value="$(arg max_height)" />
+
+        <param name="init_x" value="$(arg init_x_)"/>
+        <param name="init_y" value="$(arg init_y_)"/>
+        <param name="init_z" value="$(arg init_z_)"/>
+
+        <remap from="~command" to="/ugv_planning/wheels_vel_cmd"/>
+        <remap from="~jump_command" to="/ugv_planning/jump_cmd"/>
+        <remap from="~odometry" to="$(arg odometry_topic)"/>
+  </node>
+
+  <node pkg="ugv_planner" name="ugv_vis_node" type="ugv_vis_node" output="screen">
+        
+        <param name="max_height" value="$(arg max_height)" />
+        
+        <param name="ugv/ugv_l" value="0.01"  type="double"/>
+        <param name="ugv/ugv_w" value="0.4"  type="double"/>
+        <param name="ugv/ugv_h" value="0.3"  type="double"/>
+        <param name="ugv/mesh" value="package://ugv_planner/param/body.STL"  type="string"/>
+        <param name="ugv/mesh2" value="package://ugv_planner/param/leg.STL"  type="string"/>
+        <param name="ugv/mesh3" value="package://ugv_planner/param/mid.STL"  type="string"/>
+        <param name="ugv/mesh4" value="package://ugv_planner/param/wheels.STL"  type="string"/>
+        <param name="ugv/frame" value="world"  type="string"/>
+        <remap from="~odom" to="$(arg odometry_topic)"/>
+        <remap from="~odom_mesh" to="ugv_model"/>
+  </node>
+
+  <node pkg="local_sensing_package" type="pcl_render_node" name="pcl_render_node" output="screen">
+
+        <param name="max_height" value="$(arg max_height)" />
+        
+        <rosparam command="load" file="$(find local_sensing_package)/params/camera.yaml" />
+        <param name="sensing_horizon"  value="5.0" />
+        <param name="sensing_rate"     value="30.0"/>
+        <param name="estimation_rate"  value="30.0"/>
+
+        <param name="map/x_size"     value="$(arg map_size_x_)"/>
+        <param name="map/y_size"     value="$(arg map_size_y_)"/>
+        <param name="map/z_size"     value="$(arg map_size_z_)"/>
+
+        <remap from="~global_map" to="/global_map"/>
+        <remap from="~odometry"   to="$(arg odometry_topic)"/>
+        <remap from="~pcl_render_node/cloud"   to="/pcl_render_node/cloud"/>
+  </node>
+
+</launch>
